@@ -1,0 +1,352 @@
+ <!DOCTYPE html>
+<html>
+<head>
+    <title>星座探索计划✨</title>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #1e3c72, #2a5298);
+            color: white;
+            text-align: center;
+            padding: 50px;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        input {
+            padding: 10px;
+            margin: 10px;
+            width: 200px;
+            border: 2px solid #3498db;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #3498db;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        button:hover {
+            transform: scale(1.05);
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-shadow: 0 0 10px rgba(255,255,255,0.5);">✨ 星座探索计划 ✨</h2>
+    
+    <form onsubmit="return generateCode(event)">
+        <input type="text" id="studentId" placeholder="请输入学号" required><br>
+        <input type="text" id="name" placeholder="请输入姓名" required><br>
+        <button type="submit">解锁星座</button>
+    </form>
+
+    <script>
+        // 学生数据库
+        const studentList = {
+            "32204105108": "迪娜·苏来曼",
+            "32204105107": "娜孜叶尔开·乌提库尔",
+            "32204100098": "赵晓宇",
+            "32204100038": "杜美莹",
+            "32204100071": "郑子晴",
+            "32204100032": "卢韦均",
+            "32204100083": "谭茜雯",
+            "32204100017": "陈雨桐",
+            "32204100044": "赵思婕",
+            "32204100077": "何濠雯",
+            "32204100011": "麦晓文",
+            "32204100059": "符雯璐",
+            "32204100003": "谢彩敏",
+            "32204100062": "卢幸",
+            "32204100080": "黄佳缘",
+            "32204100014": "梁欣彤",
+            "32204100056": "高映瑜",
+            "32204100092": "陈舒姚",
+            "2004100052": "王艾琳",
+            "32204100005": "李晓楠",
+            "32204100105": "买迪娜·热孜克"
+        };
+
+        // 星座数据库（包含完整21个星座链接）
+        const constellationData = [
+            {
+                name: "白羊座",
+                url: "https://stellarium-web.org/skysource/Aries?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "充满活力的开拓者，具有无畏的勇气",
+                symbol: "♈"
+            },
+             {
+                name: "金牛座",
+                url: "https://stellarium-web.org/skysource/Taurus?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "稳重可靠的美食家，拥有艺术天赋", 
+                symbol: "♉"
+            },
+            {
+                name: "双子座",
+                url: "https://stellarium-web.org/skysource/Gemini?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "机智多变的沟通者，永远充满好奇",
+                symbol: "♊"
+            },
+            {
+                name: "巨蟹座",
+                url: "https://stellarium-web.org/skysource/Cancer?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "温柔体贴的守护者，家庭观念强烈",
+                symbol: "♋"
+            },
+            {
+                name: "狮子座",
+                url: "https://stellarium-web.org/skysource/Leo?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "光芒四射的领导者，充满创造力",
+                symbol: "♌"
+            },
+            {
+                name: "处女座",
+                url: "https://stellarium-web.org/skysource/Virgo?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "追求完美的分析师，注重细节处理",
+                symbol: "♍"
+            },
+            {
+                name: "天秤座",
+                url: "https://stellarium-web.org/skysource/Libra?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "优雅公正的协调者，具有社交魅力",
+                symbol: "♎"
+            },
+            {
+                name: "天蝎座",
+                url: "https://stellarium-web.org/skysource/Scorpius?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "深邃敏锐的观察家，拥有强大意志",
+                symbol: "♏"
+            },
+            {
+                name: "射手座",
+                url: "https://stellarium-web.org/skysource/Sagittarius?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "自由乐观的探险家，热爱哲学思考",
+                symbol: "♐"
+            },
+            {
+                name: "摩羯座",
+                url: "https://stellarium-web.org/skysource/Capricornus?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "务实进取的奋斗者，擅长长远规划",
+                symbol: "♑"
+            },
+            {
+                name: "水瓶座",
+                url: "https://stellarium-web.org/skysource/Aquarius?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "创新独立的思想家，充满人道精神",
+                symbol: "♒"
+            },
+            {
+                name: "双鱼座",
+                url: "https://stellarium-web.org/skysource/Pisces?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "浪漫敏感的艺术家，富有同情心",
+                symbol: "♓"
+            },
+            {
+                name: "猎户座",
+                url: "https://stellarium-web.org/skysource/Orion?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "冬季最耀眼的猎人，象征勇敢力量",
+                symbol: "🜁"
+            },
+            {
+                name: "仙女座",
+                url: "https://stellarium-web.org/skysource/Andromeda?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "秋季星空的女神，代表智慧与美丽",
+                symbol: "👸"
+            },
+            {
+                name: "天琴座",
+                url: "https://stellarium-web.org/skysource/Lyra?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "夏夜银河的竖琴，象征音乐与诗歌",
+                symbol: "🎻"
+            },
+            {
+                name: "天鹅座",
+                url: "https://stellarium-web.org/skysource/Cygnus?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "展翅高飞的北十字，代表忠贞不渝",
+                symbol: "🦢"
+            },
+            {
+                name: "大熊座",
+                url: "https://stellarium-web.org/skysource/Ursa%20Major?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "指引方向的北斗，象征守护与指引",
+                symbol: "🐻"
+            },
+            {
+                name: "小熊座",
+                url: "https://stellarium-web.org/skysource/Ursa%20Minor?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "北极星的所在，代表坚定的方向",
+                symbol: "🐾"
+            },
+            {
+                name: "飞马座",
+                url: "https://stellarium-web.org/skysource/Pegasus?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "秋季四边形的天马，象征自由翱翔",
+                symbol: "🐎"
+            },
+            {
+                name: "英仙座",
+                url: "https://stellarium-web.org/skysource/Perseus?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "手持美杜莎首级的英雄，代表勇气",
+                symbol: "⚔️"
+            },
+            {
+                name: "蛇夫座",
+                url: "https://stellarium-web.org/skysource/Ophiuchus?fov=18.973&date=2025-03-06T13:11:33Z&lat=25.07&lng=121.52&elev=0",
+                desc: "掌握医术的智者，象征治愈与新生",
+                symbol: "⛎"
+            }
+        ];
+// 21条专属夸夸
+        const compliments = [
+            "你眨眼睛时有星星偷偷跑出来啦🌟",
+            "你擦眼镜时镜片里映出彩虹光晕🌈",
+            "你挽起袖子的瞬间像在准备施展魔法🪄",
+            "你翻书包时挂件叮当声是上课铃BGM🎵",
+            "你擦掉错别字的力道像在盖章「我超棒」💪",
+            "你路过的走廊都会自动开花呀🌷",
+            "你的存在像是自带BGM的美好片段🎵",
+            "每次打招呼都像收到草莓味棉花糖🍓",
+            "你让教室角落都变得亮晶晶的✨",
+            "看到你就自动切换成好天气模式☁️",
+            "你托腮听课的样子像在收藏知识星星🌟",
+            "你哼歌的声音像汽水泡泡在跳舞🥤",
+            "你路过的空气都变得香香软软的🍰",
+            "你发呆的样子像云朵在打瞌睡☁️💤",
+            "你转身时马尾甩出的弧线超元气！🎀",
+            "你存在的空间自动加载柔光滤镜📸",
+            "你记笔记时的沙沙声像春雨在唱歌📖",
+            "你低头找文具的样子像在寻宝🧚",
+            "你走路带起的风有青草香🌿",
+            "你打哈欠的样子像树懒宝宝超治愈🦥",
+            "你翻书页的声音是最好听的白噪音📚"
+        ];
+
+        function generateCode(event) {
+            event.preventDefault();
+
+            const studentId = document.getElementById('studentId').value.trim();
+            const name = document.getElementById('name').value.trim();
+
+            // 验证流程
+            if (!studentList[studentId]) {
+                alert("❌ 学号不存在，请确认输入是否正确");
+                return;
+            }
+            if (studentList[studentId] !== name) {
+                alert("⚠️ 姓名与学号不匹配，请重新输入");
+                return;
+            }
+
+            // 获取个人信息
+            const sortedIds = Object.keys(studentList).sort();
+            const index = sortedIds.indexOf(studentId);
+            const constellation = constellationData[index];
+            const compliment = compliments[index];
+
+            // 创建惊喜窗口
+            const popup = window.open('', '专属惊喜', 'width=700,height=600,menubar=no,toolbar=no');
+            
+            popup.document.write(`
+                <html>
+                <head>
+                    <title>给${name}的惊喜✨</title>
+                    <style>
+                        body {
+                            background: linear-gradient(135deg, #2c3e50, #3498db);
+                            color: white;
+                            font-family: 'Microsoft YaHei';
+                            padding: 30px;
+                            text-align: center;
+                        }
+                        .magic-card {
+                            background: rgba(255,255,255,0.1);
+                            border-radius: 25px;
+                            padding: 30px;
+                            margin: 20px auto;
+                            max-width: 500px;
+                            backdrop-filter: blur(10px);
+                            box-shadow: 0 0 30px rgba(76,175,80,0.2);
+                        }
+                        .constellation {
+                            color: #FFD700;
+                            font-size: 2.2em;
+                            margin: 15px 0;
+                            text-shadow: 0 0 10px rgba(255,215,0,0.3);
+                        }
+                        .desc-box {
+                            background: rgba(0,0,0,0.3);
+                            border-radius: 15px;
+                            padding: 20px;
+                            margin: 20px 0;
+                        }
+                        .compliment {
+                            font-size: 1.1em;
+                            line-height: 1.8;
+                            margin: 25px 0;
+                            padding: 15px;
+                            background: linear-gradient(45deg, #9C27B0, #2196F3);
+                            border-radius: 15px;
+                            animation: glow 2s infinite alternate;
+                        }
+                        @keyframes glow {
+                            from { box-shadow: 0 0 10px #9C27B0; }
+                            to { box-shadow: 0 0 20px #2196F3; }
+                        }
+                        button {
+            margin: 15px;
+            padding: 12px 25px;
+            border-radius: 30px;
+            transition: all 0.3s;
+        }
+                    </style>
+                </head>
+                <body>
+                    <div class="magic-card">
+                        <div class="constellation">
+                            ${constellation.symbol} ${constellation.name}
+                        </div>
+
+                        <div class="desc-box">
+                            📜 星座特质：${constellation.desc}
+                        </div>
+
+                        <div class="compliment">
+                            ✨ 专属夸夸 ✨<br><br>
+                            ${compliment}
+                        </div>
+
+                        <button style="background:#2196F3;" 
+                                onclick="copyMagic()">
+                            📋 复制全部美好
+                        </button>
+                        
+                        <button style="background:#9C27B0;" 
+                                onclick="window.open('${constellation.url}')">
+                            🌠 探索我的星空
+                        </button>
+                    </div>
+
+                    <script>
+                        function copyMagic() {
+                            const content = \`⭐ ${constellation.name} ${constellation.symbol} ⭐\\n\\n📝 特质：${
+                                constellation.desc
+                            }\\n\\n🎀 专属夸夸 🎀\\n${compliment}\`;
+                            
+                            navigator.clipboard.writeText(content)
+                                .then(() => alert('美好记忆已存入剪贴板～'))
+                                .catch(() => alert('请手动复制这份美好哦'));
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `);
+        }
+    </script>
+</body>
+</html>
